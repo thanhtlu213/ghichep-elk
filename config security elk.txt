@@ -1,0 +1,41 @@
+#Configure X-Pack Security
+
+## 1. Stop kibana
+	systemctl stop kibana
+
+## 2. Enable xpack in elasticsearch.yml
+	vi /etc/elasticsearch/elasticsearch.yml
+	xpack.security.enabled: true
+
+## 3. Restart elastichsearch
+	systemctl restart elasticsearch	
+
+## 4. Setup default user passwords
+	/usr/share/elasticsearch/bin/elasticsearch-setup-passwords auto
+	or
+	/usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
+
+### System passwords
+
+<< Default user passwords go here >>
+
+## 5. Configure kibana.yml
+	### Elasticsearch authentication
+	elasticsearch.username: "kibana_system"
+	elasticsearch.password: "new_password"
+
+	### Security audit envents
+	xpack.security.audit.enabled: true
+
+	### Idle timeout setting
+	xpack.security.session.idleTimeout: 30m
+
+## 6. Restart elastichsearch, kibana
+	systemctl restart elastichsearch
+	systemctl restart kibana
+
+
+Link doc: https://www.elastic.co/guide/en/elasticsearch/reference/7.16/configuring-stack-security.html?blade=kibanasecuritymessage
+
+
+User, password: IsOrA@123

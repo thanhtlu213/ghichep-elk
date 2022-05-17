@@ -1,0 +1,50 @@
+### Import key
+sudo rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
+
+### thêm repo
+
+echo '[elasticsearch-7.x]
+name=Elasticsearch repository for 7.x packages
+baseurl=https://artifacts.elastic.co/packages/7.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+' > /etc/yum.repos.d/elasticsearch.repo
+
+-----------------------------------------------------------
+
+### cài đặt filebeat
+yum install filebeat -y
+
+-----------------------------------------------------------
+
+### config /etc/filebeat/filebeat.yml
+
+# ---------------------------- Elasticsearch Output ----------------------------
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts: ["10.0.0.103:9200"]
+  indices:
+    - index: "isofh-nckh-10.0.0.45-%{[agent.version]}-%{+yyyy.MM.dd}"
+  #    when.contains:
+  #      message: "WARN"
+  #  - index: "error-%{[agent.version]}-%{+yyyy.MM.dd}"
+  #    when.contains:
+  #      message: "ERR"
+  # Protocol - either `http` (default) or `https`.
+  #protocol: "https"
+
+  # Authentication credentials - either API key or username/password.
+  #api_key: "id:api_key"
+  username: "elastic"
+  password: "IsOrA@123"
+
+
+### Restart filebeat
+systemctl restart filebeat
+systemctl status filebeat
+
+### open port 9200
+port=9200 && sudo firewall-cmd --permanent --zone=public --remove-port=${port}/tcp  && sudo firewall-cmd --reload
